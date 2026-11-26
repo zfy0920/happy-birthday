@@ -126,6 +126,13 @@ body[data-s=wish] #cake,body[data-s=gift] #giftWrap{cursor:pointer}
 .bar{height:6px;max-width:260px;margin:18px auto 4px;border-radius:9px;background:#ffffff22;overflow:hidden}
 .bar i{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,var(--gold),var(--pink));animation:fill linear forwards}
 @keyframes fill{to{width:100%}}
+.slot{margin:14px auto 4px;max-width:420px;padding:16px 18px;border-radius:18px;border:2px dashed #ffd27a88;background:#00000033;font-weight:900;font-size:clamp(20px,4.6vw,28px);line-height:1.3;min-height:76px;display:grid;place-items:center;overflow:hidden}
+.slot span{display:block}
+.slot span.pop{animation:slotIn .12s ease-out}
+@keyframes slotIn{from{transform:translateY(-60%);opacity:.2}}
+.slot.won{border:2px solid var(--gold);color:var(--gold);box-shadow:0 0 30px #ffd27a66,inset 0 0 20px #ffd27a33;animation:winPulse 1.2s ease-in-out infinite alternate}
+@keyframes winPulse{to{box-shadow:0 0 50px #ffd27aaa,inset 0 0 26px #ffd27a55}}
+.note{margin-top:10px!important;font-size:14px!important;color:var(--soft)}
 @keyframes lineIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 .letter .sign{font-weight:900;font-size:24px;color:var(--pink)}
 @media(max-width:520px){.b{flex:1 1 100%}.card{padding:18px}}
@@ -517,22 +524,41 @@ $('cake').addEventListener('click',()=>{if(body.dataset.s==='wish'&&onNext)next.
 
 /* screen 3: gift */
 const gw=$('giftWrap'),gift=$('gift');
+/* 獎品清單：改這裡 */
+const PRIZES=['一頓大餐（我請客）','一杯手搖飲，甜度冰塊隨你','一場電影，爆米花我買','一整天，都聽你的','一個超級大擁抱','下次出去玩，我當司機','許一個願望，我幫你實現','一張「不生氣卡」，限用一次'];
 function giftScreen(){
   body.dataset.s='gift';gw.classList.add('hl');
-  show('<p class="big">還有一份禮物</p><p>這是特地為你準備的，打開看看吧！</p>');
-  step2('打開禮物','gift',openGift);
+  show('<p class="big">生日抽獎時間！</p><p>禮物盒裡藏著好幾份獎品，<br>但只能抽一份，看看你的手氣吧！</p>');
+  step2('抽獎！','gift',openGift);
 }
 function openGift(){
   wait();body.dataset.s='opening';gw.classList.remove('hl');
-  gift.classList.remove('shake');gift.getBoundingClientRect();gift.classList.add('shake');tick(660);setTimeout(()=>tick(740),200);
-  setTimeout(()=>{
-    gw.classList.add('open');sChime();sPop();
-    const r=gift.getBoundingClientRect(),x=r.left+r.width*.5,y=r.top+r.height*.3;
-    hearts(x,y,30);sparkBurst(x,y,70,['#ffd27a','#fff1e6','#ff9ab8'],6);flash(x,y,120,'#ffd27a');
-    confetti(x,y,70,{angle:-Math.PI/2,spread:1.3,speed:12});
-    show('<p class="big">打開了！</p><p>裡面裝的是滿滿的祝福，還有一封寫給你的信。</p>');
-    setTimeout(()=>step2('讀信','arrow',ending),900);
-  },620);
+  show('<p class="big">抽獎中……</p><div class="slot"><span id="slotT"></span></div>');
+  const el=$('slotT'),win=Math.floor(Math.random()*PRIZES.length);
+  let idx=Math.floor(Math.random()*PRIZES.length),delay=55;
+  const total=PRIZES.length*3+((win-idx+PRIZES.length*9)%PRIZES.length); /* ends exactly on win */
+  let n=0;
+  const roll=()=>{
+    el.textContent=PRIZES[idx];el.classList.remove('pop');el.getBoundingClientRect();el.classList.add('pop');tick(1100+(n%2)*220);
+    if(n%3===0){gift.classList.remove('shake');gift.getBoundingClientRect();gift.classList.add('shake')}
+    if(n>=total){land();return}
+    n++;idx=(idx+1)%PRIZES.length;
+    if(n>total-10)delay*=1.28;
+    setTimeout(roll,delay);
+  };
+  const land=()=>{
+    $('card').querySelector('.slot').classList.add('won');
+    setTimeout(()=>{
+      gw.classList.add('open');sChime();sPop();setTimeout(sPop,90);
+      const r=gift.getBoundingClientRect(),x=r.left+r.width*.5,y=r.top+r.height*.3;
+      hearts(x,y,30);sparkBurst(x,y,80,['#ffd27a','#fff1e6','#ff9ab8'],6.5);flash(x,y,140,'#ffd27a');
+      confetti(x,y,90,{angle:-Math.PI/2,spread:1.3,speed:13});
+      confetti(0,H,120,{angle:-Math.PI/3,spread:.7,speed:R(17,21)});confetti(W,H,120,{angle:-2*Math.PI/3,spread:.7,speed:R(17,21)});
+      show(`<p class="big">恭喜抽中！</p><div class="slot won"><span>${esc(PRIZES[win])}</span></div><p class="note">截圖這個畫面，就可以找我兌換喔</p>`);
+      setTimeout(()=>step2('最後一頁','arrow',ending),1400);
+    },500);
+  };
+  roll();
 }
 const openG=()=>{if(body.dataset.s==='gift'&&onNext)next.click()};
 gw.addEventListener('click',openG);
