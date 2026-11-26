@@ -30,7 +30,7 @@ canvas.layer{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
 @keyframes sway{from{transform:rotate(-7deg) translateX(-10px)}to{transform:rotate(7deg) translateX(10px)}}
 #lights{position:absolute;top:0;left:0;width:100%;z-index:2;pointer-events:none;overflow:visible}
 .bulb{transition:opacity .25s;transition-delay:var(--o)}
-body.dark .bulb{opacity:.07;transition-delay:0s}
+body.dark .bulb,body.off .bulb{opacity:.07;transition-delay:0s}
 .bulb .gl{animation:tw 1.8s ease-in-out infinite alternate;animation-delay:var(--d);transform-box:fill-box;transform-origin:center}
 .bulb.hit .gl{animation:none;opacity:1;transform:scale(1.7)}
 @keyframes tw{from{opacity:.3}to{opacity:1}}
@@ -108,6 +108,23 @@ footer input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .snd{position:fixed;top:12px;right:12px;z-index:8;width:46px;height:46px;border-radius:50%;border:1px solid #ffffff38;background:#0005;color:var(--cream);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:grid;place-items:center;cursor:pointer}
 .snd svg{width:22px;height:22px}
 .snd:focus-visible{outline:2px solid var(--gold)}
+.intro{display:none;min-height:58vh;place-content:center;padding-top:6vh}
+.introT{font-weight:900;font-size:clamp(36px,8vw,60px);line-height:1.15;margin:14px 0 0;text-wrap:balance;text-shadow:0 4px 0 #5a1530,0 0 30px #ff7aa255}
+body[data-s=intro] .intro{display:grid;animation:up 1.2s ease both}
+body[data-s=intro] .head,body[data-s=intro] .stage,body[data-s=intro] .card{display:none}
+.head,.stage,.card{animation:up 1s cubic-bezier(.2,.9,.3,1) both}
+.stage{animation-delay:.3s}.card{animation-delay:.6s}
+@keyframes up{from{opacity:0;transform:translateY(30px)}}
+.btns{margin-top:22px}
+.b{min-width:220px}
+.b.wait{visibility:hidden}
+#cake,#giftWrap{cursor:default}
+body[data-s=wish] #cake,body[data-s=gift] #giftWrap{cursor:pointer}
+#giftWrap.hl #gift{animation:hop 1.1s ease-in-out infinite}
+@keyframes hop{50%{transform:translateY(-10px) rotate(-3deg)}}
+.letter .l{opacity:0;margin:10px 0 0;animation:lineIn .9s ease forwards;animation-delay:var(--d)}
+@keyframes lineIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.letter .sign{font-weight:900;font-size:24px;color:var(--pink)}
 @media(max-width:520px){.b{flex:1 1 100%}.card{padding:18px}}
 @media(prefers-reduced-motion:reduce){.ch,.fl,.fglow,.flag,.bulb .gl,.spk,.balloon>div,.b.pulse{animation:none}}
 </style>
@@ -119,9 +136,16 @@ footer input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 <button class="snd live" id="snd" aria-label="音效開關"></button>
 
 <main>
-  <p class="script">Happy Birthday</p>
-  <h1><span class="nm" id="nm"></span><span class="sub">生日快樂！</span></h1>
-  <p class="lead">今晚所有的燈，都只為你一個人亮</p>
+  <section class="intro" id="intro">
+    <p class="script">For you</p>
+    <p class="introT">今天是一個<br>特別的日子</p>
+    <p class="lead">有一份驚喜，只準備給你一個人</p>
+  </section>
+  <header class="head">
+    <p class="script">Happy Birthday</p>
+    <h1><span class="nm" id="nm"></span><span class="sub">生日快樂！</span></h1>
+    <p class="lead">今晚所有的燈，都只為你一個人亮</p>
+  </header>
 
   <div class="stage live">
   <svg id="scene" viewBox="0 0 620 440" role="img" aria-label="點著蠟燭的雙層草莓蛋糕，旁邊有兩個禮物">
@@ -216,17 +240,11 @@ footer input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
   </svg>
   </div>
 
+  <div class="card live" id="card" aria-live="polite"><div class="in"></div></div>
+
   <div class="btns live">
-    <button class="b gold pulse" id="bBlow"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.5c2.2 2.6 2.8 4.2 2.8 5.3a2.8 2.8 0 0 1-5.6 0c0-1.1.6-2.7 2.8-5.3z"/><rect x="9" y="11.5" width="6" height="11" rx="1.5" opacity=".85"/></svg><span>吹蠟燭許願</span></button>
-    <button class="b" id="bGift"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="8.5" width="18" height="4.5" rx="1"/><rect x="4.5" y="13" width="15" height="8.5" rx="1"/><path d="M12 8.5C9 8.5 5.6 7.6 6.3 5 7 2.6 10.2 4.4 12 8.5zm0 0c3 0 6.4-.9 5.7-3.5C17 2.6 13.8 4.4 12 8.5z"/></svg><span>打開禮物</span></button>
-    <button class="b teal" id="bSong"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 18.5a3 3 0 1 1-2-2.83V5l12-2v12.5a3 3 0 1 1-2-2.83V7.2L9 8.6z"/></svg><span>生日歌＋煙火</span></button>
+    <button class="b gold pulse" id="next"><svg class="ic" viewBox="0 0 24 24" fill="currentColor"></svg><span>按下開始</span></button>
   </div>
-
-  <div class="card live" id="card" aria-live="polite"><div class="in"><p class="big">準備好了嗎？</p><p>先吹蠟燭許個願，再拆禮物、放一首歌吧！</p></div></div>
-  <p class="meta" id="meta"></p>
-  <p class="hint">點夜空會放煙火，飄過的氣球可以戳破，蛋糕和禮物也點得下去</p>
-
-  <footer class="live"><label for="name">壽星名字</label><input id="name" maxlength="12" autocomplete="off"></footer>
 </main>
 
 <div id="dim"></div>
@@ -244,13 +262,9 @@ const FW=['#ffd27a','#ff7aa2','#6fe3d0','#ff9a5a','#fff1e6','#c9a0ff','#ff4f7e']
 let seed=11;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
 const f1=n=>n.toFixed(1);
 
-/* ---------- name ---------- */
-const nameIn=$('name');let NAME='好朋友';
-try{const s=localStorage.getItem('bday-name');if(s)NAME=s}catch(e){}
-nameIn.value=NAME;
+/* ---------- 壽星名字：改這裡 ---------- */
+const NAME='好朋友';
 const renderName=()=>{$('nm').innerHTML=[...NAME].map((c,i)=>`<span class="ch" style="--i:${i}">${esc(c)}</span>`).join('')};
-renderName();
-nameIn.addEventListener('input',()=>{NAME=nameIn.value.trim()||'好朋友';renderName();try{localStorage.setItem('bday-name',nameIn.value.trim())}catch(e){}});
 
 /* ---------- cake scene ---------- */
 function dripPath(cx,y,rx,ry,n,maxLen){
@@ -413,71 +427,34 @@ function step(t){
 }
 function frame(t){drawSky(t);step(t);requestAnimationFrame(frame)}
 
-/* ---------- ui helpers ---------- */
-const card=$('card');
+/* ---------- flow: one screen at a time ---------- */
+const card=$('card'),next=$('next'),body=document.body;
 const show=h=>{card.innerHTML=`<div class="in">${h}</div>`;const r=card.getBoundingClientRect();if(r.bottom>innerHeight)card.scrollIntoView({behavior:calm?'auto':'smooth',block:'nearest'})};
-const setBtn=(id,t)=>{$(id).querySelector('span').textContent=t};
-let wishes=0,popped=0;
-const bump=()=>{$('meta').textContent=`已經送出 ${wishes} 份祝福`+(popped?` · 戳破 ${popped} 顆氣球`:'')};
 const center=el=>{const r=el.getBoundingClientRect();return[r.left+r.width/2,r.top+r.height/2]};
-
-/* ---------- 1. candles ---------- */
-const scene=$('scene'),flames=[...document.querySelectorAll('.flame')],glows=[...document.querySelectorAll('.fglow')],smokes=[...document.querySelectorAll('.smoke')];
-let lit=true,busy=false;
-function blow(){
-  if(busy)return;busy=true;$('bBlow').classList.remove('pulse');
-  if(lit){
-    sWhoosh();
-    flames.forEach((f,i)=>setTimeout(()=>{f.classList.add('out');glows[i].classList.add('out');smokes[i].classList.remove('on');smokes[i].getBoundingClientRect();smokes[i].classList.add('on')},i*80));
-    scene.classList.add('out');
-    setTimeout(()=>{dark=true;document.body.classList.add('dark')},350);
-    show('<p class="big">噓……燈關了</p><p>閉上眼睛，在心裡許一個願望</p>');
-    setTimeout(shootingStar,1300);
-    setTimeout(()=>{
-      dark=false;document.body.classList.remove('dark');
-      confetti(0,H,170,{angle:-Math.PI/3,spread:.7,speed:R(17,21)});confetti(W,H,170,{angle:-2*Math.PI/3,spread:.7,speed:R(17,21)});
-      sPop();setTimeout(sPop,60);sChime();
-      show(`<p class="big">願望已經送上天了！</p><p>${esc(NAME)}，剛剛那顆流星帶走了你的願望，它一定會實現的。</p>`);
-      setBtn('bBlow','重新點蠟燭');lit=false;busy=false;wishes++;bump();
-    },3100);
-  }else{
-    scene.classList.remove('out');
-    flames.forEach((f,i)=>setTimeout(()=>{f.classList.remove('out');glows[i].classList.remove('out');const[x,y]=center(glows[i]);sparkBurst(x,y,22,['#ffd27a','#fff1b8'],2.6);tick(880+i*120)},i*170));
-    show('<p class="big">蠟燭重新點亮了</p><p>想再許一個願望嗎？願望多許幾個也沒關係！</p>');
-    setTimeout(()=>{busy=false;lit=true;setBtn('bBlow','吹蠟燭許願')},950);
-  }
+const ICONS={
+  music:'<path d="M9 18.5a3 3 0 1 1-2-2.83V5l12-2v12.5a3 3 0 1 1-2-2.83V7.2L9 8.6z"/>',
+  candle:'<path d="M12 1.5c2.2 2.6 2.8 4.2 2.8 5.3a2.8 2.8 0 0 1-5.6 0c0-1.1.6-2.7 2.8-5.3z"/><rect x="9" y="11.5" width="6" height="11" rx="1.5" opacity=".85"/>',
+  gift:'<rect x="3" y="8.5" width="18" height="4.5" rx="1"/><rect x="4.5" y="13" width="15" height="8.5" rx="1"/><path d="M12 8.5C9 8.5 5.6 7.6 6.3 5 7 2.6 10.2 4.4 12 8.5zm0 0c3 0 6.4-.9 5.7-3.5C17 2.6 13.8 4.4 12 8.5z"/>',
+  arrow:'<path d="M4 11h12.2l-4.6-4.6L13 5l7 7-7 7-1.4-1.4 4.6-4.6H4z"/>'};
+const STYLE={music:['teal'],candle:['gold'],gift:[],arrow:['gold']};
+let onNext=null;
+function step2(label,icon,fn){
+  next.className='b pulse '+(STYLE[icon]||[]).join(' ');
+  next.querySelector('.ic').innerHTML=ICONS[icon];next.querySelector('span').textContent=label;onNext=fn;
 }
-$('bBlow').addEventListener('click',blow);$('cake').addEventListener('click',blow);
+const wait=()=>{onNext=null;next.className='b wait'};
+next.addEventListener('click',()=>{if(!onNext)return;const f=onNext;wait();f()});
 
-/* ---------- 2. gift ---------- */
-const WISH=['謝謝你一直都在。認識你，真的是我很幸運的事。','新的一歲，願你每天都有好心情、好天氣、好運氣。','願你想做的事都順利，想見的人都見得到。','今天你最大！想吃什麼就吃什麼，卡路里今天不算數。','願你永遠保持現在的樣子：有趣、善良、閃閃發光。','不管幾歲，都要記得：你值得所有美好的事。','以後的每一個生日，我也想繼續幫你慶祝。','願你的煩惱像蠟燭一樣，一吹就全部不見。'];
-const gw=$('giftWrap'),gift=$('gift');let gOpen=false,gBusy=false,gi=-1;
-function openGift(){
-  if(gBusy)return;gBusy=true;
-  const go=()=>{
-    gift.classList.remove('shake');gift.getBoundingClientRect();gift.classList.add('shake');tick(660);setTimeout(()=>tick(740),200);
-    setTimeout(()=>{
-      gw.classList.add('open');gOpen=true;sChime();sPop();
-      const r=gift.getBoundingClientRect(),x=r.left+r.width*.5,y=r.top+r.height*.3;
-      hearts(x,y,30);sparkBurst(x,y,70,['#ffd27a','#fff1e6','#ff9ab8'],6);flash(x,y,120,'#ffd27a');
-      confetti(x,y,70,{angle:-Math.PI/2,spread:1.3,speed:12});
-      let n;do n=Math.floor(Math.random()*WISH.length);while(n===gi);gi=n;
-      show(`<p class="big">給 ${esc(NAME)} 的悄悄話</p><p>${WISH[n]}</p>`);
-      setBtn('bGift','再拆一份');gBusy=false;wishes++;bump();
-    },620);
-  };
-  if(gOpen){gw.classList.remove('open');gOpen=false;setTimeout(go,480)}else go();
-}
-$('bGift').addEventListener('click',openGift);gw.addEventListener('click',openGift);
-gw.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openGift()}});
-
-/* ---------- 3. song + fireworks (traditional "Happy Birthday" melody) ---------- */
+/* screen 1: song + fireworks (traditional "Happy Birthday" melody) */
 const N={G4:392,A4:440,B4:494,C5:523,D5:587,E5:659,F5:698,G5:784};
 const SONG=[['G4',.75],['G4',.25],['A4',1],['G4',1],['C5',1],['B4',2],['G4',.75],['G4',.25],['A4',1],['G4',1],['D5',1],['C5',2],
   ['G4',.75],['G4',.25],['G5',1],['E5',1],['C5',1],['B4',1],['A4',2],['F5',.75],['F5',.25],['E5',1],['C5',1],['D5',1],['C5',3]];
-const BEAT=.42;let playing=false;
+const BEAT=.42;
+function start(){
+  body.dataset.s='party';body.classList.remove('off');renderName();sChime();show('<p class="big">準備好了嗎？</p><p>音樂要開始囉，記得把聲音打開</p>');
+  setTimeout(()=>{rain(160);song()},1400);
+}
 function song(){
-  if(playing)return;playing=true;setBtn('bSong','播放中…');
   const L=['祝','你','生','日','快','樂'],lines=[L,L,['祝','福',NAME,'生','日','快','樂'],L],map=[];
   lines.forEach((l,li)=>l.forEach((t,ti)=>map.push([li,ti])));
   show(`<div class="lyr">${lines.map((l,li)=>`<p class="ln" id="ln${li}">${l.map((t,ti)=>`<span class="tk${li===2&&ti===2?' nm2':''}" id="tk${li}-${ti}">${esc(t)}</span>`).join('')}</p>`).join('')}</div>`);
@@ -497,10 +474,67 @@ function finale(){
   bulbs.forEach(b=>b.classList.remove('hit'));
   card.querySelectorAll('.tk').forEach(e=>{e.classList.remove('now');e.classList.add('done')});
   for(let k=0;k<5;k++)setTimeout(()=>rocket(W*(.12+.19*k),R(H*.1,H*.3),k===2?'heart':null),k*170);
-  setTimeout(()=>{rain(220);show(`<p class="big">${esc(NAME)}，生日快樂！</p><p>今天是屬於你的日子，願你被滿滿的愛包圍。</p>`)},1500);
-  playing=false;setBtn('bSong','再放一次');wishes++;bump();
+  setTimeout(()=>{rain(200);show(`<p class="big">${esc(NAME)}，生日快樂！</p><p>歌唱完了，接下來，該許願了。</p>`);step2('去許願','candle',wishScreen)},1600);
 }
-$('bSong').addEventListener('click',song);
+
+/* screen 2: wish + blow candles */
+const scene=$('scene'),flames=[...document.querySelectorAll('.flame')],glows=[...document.querySelectorAll('.fglow')],smokes=[...document.querySelectorAll('.smoke')];
+function wishScreen(){
+  body.dataset.s='wish';
+  show('<p class="big">許個願吧</p><p>閉上眼睛，在心裡許一個願望。<br>準備好了，就把蠟燭吹熄。</p>');
+  step2('吹熄蠟燭','candle',blow);
+}
+function blow(){
+  wait();body.dataset.s='blowing';sWhoosh();
+  flames.forEach((f,i)=>setTimeout(()=>{f.classList.add('out');glows[i].classList.add('out');smokes[i].classList.remove('on');smokes[i].getBoundingClientRect();smokes[i].classList.add('on')},i*80));
+  scene.classList.add('out');
+  setTimeout(()=>{dark=true;body.classList.add('dark')},350);
+  show('<p class="big">噓……燈關了</p><p>願望正在送出去</p>');
+  setTimeout(shootingStar,1300);
+  setTimeout(()=>{
+    dark=false;body.classList.remove('dark');
+    confetti(0,H,170,{angle:-Math.PI/3,spread:.7,speed:R(17,21)});confetti(W,H,170,{angle:-2*Math.PI/3,spread:.7,speed:R(17,21)});
+    sPop();setTimeout(sPop,60);sChime();
+    show(`<p class="big">願望已經送上天了！</p><p>剛剛那顆流星帶走了你的願望，它一定會實現的。</p>`);
+    step2('下一步','arrow',giftScreen);
+  },3100);
+}
+$('cake').addEventListener('click',()=>{if(body.dataset.s==='wish'&&onNext)next.click()});
+
+/* screen 3: gift */
+const gw=$('giftWrap'),gift=$('gift');
+function giftScreen(){
+  body.dataset.s='gift';gw.classList.add('hl');
+  show('<p class="big">還有一份禮物</p><p>這是特地為你準備的，打開看看吧！</p>');
+  step2('打開禮物','gift',openGift);
+}
+function openGift(){
+  wait();body.dataset.s='opening';gw.classList.remove('hl');
+  gift.classList.remove('shake');gift.getBoundingClientRect();gift.classList.add('shake');tick(660);setTimeout(()=>tick(740),200);
+  setTimeout(()=>{
+    gw.classList.add('open');sChime();sPop();
+    const r=gift.getBoundingClientRect(),x=r.left+r.width*.5,y=r.top+r.height*.3;
+    hearts(x,y,30);sparkBurst(x,y,70,['#ffd27a','#fff1e6','#ff9ab8'],6);flash(x,y,120,'#ffd27a');
+    confetti(x,y,70,{angle:-Math.PI/2,spread:1.3,speed:12});
+    show('<p class="big">打開了！</p><p>裡面裝的是滿滿的祝福，還有一封寫給你的信。</p>');
+    setTimeout(()=>step2('讀信','arrow',ending),900);
+  },620);
+}
+const openG=()=>{if(body.dataset.s==='gift'&&onNext)next.click()};
+gw.addEventListener('click',openG);
+gw.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openG()}});
+
+/* screen 4: the letter, stays until they leave */
+const LETTER=['謝謝你一直都在。認識你，真的是我很幸運的事。','新的一歲，願你每天都有好心情、好天氣、好運氣。','願你想做的事都順利，想見的人都見得到。','不管幾歲，都要記得：你值得所有美好的事。'];
+function ending(){
+  body.dataset.s='end';next.hidden=true;
+  scene.classList.remove('out');
+  flames.forEach((f,i)=>setTimeout(()=>{f.classList.remove('out');glows[i].classList.remove('out');const[x,y]=center(glows[i]);sparkBurst(x,y,22,['#ffd27a','#fff1b8'],2.6);tick(880+i*120)},i*200));
+  const n=LETTER.length;
+  show(`<div class="letter"><p class="big">給 ${esc(NAME)}</p>${LETTER.map((t,i)=>`<p class="l" style="--d:${(.6+i*1.4).toFixed(1)}s">${t}</p>`).join('')}<p class="l sign" style="--d:${(.6+n*1.4+.4).toFixed(1)}s">生日快樂！</p></div>`);
+  setTimeout(()=>{for(let k=0;k<5;k++)setTimeout(()=>rocket(W*(.12+.19*k),R(H*.1,H*.3),k===2?'heart':null),k*170);rain(220)},(.6+n*1.4+.4)*1000);
+  setTimeout(function loop(){if(!document.hidden)rocket(R(W*.1,W*.9),R(H*.08,H*.35));setTimeout(loop,R(1800,3200))},(.6+n*1.4+3)*1000);
+}
 
 /* ---------- balloons ---------- */
 const BL=$('balloons'),BC=['#ff7aa2','#ffd27a','#6fe3d0','#ff9a5a','#c9a0ff','#ff4f7e'];
@@ -513,7 +547,7 @@ function spawnBalloon(initial){
   b.innerHTML=`<div style="animation-duration:${R(2.6,4).toFixed(2)}s">${balloonSVG(c)}</div>`;
   b.addEventListener('animationend',e=>{if(e.target===b)b.remove()});
   b.addEventListener('pointerdown',e=>{e.stopPropagation();const r=b.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.width*.6;
-    sPop();confetti(x,y,36,{speed:7,cols:[c,'#fff1e6','#ffd27a']});sparkBurst(x,y,24,c,3.6);flash(x,y,50,c);b.remove();popped++;bump()});
+    sPop();confetti(x,y,36,{speed:7,cols:[c,'#fff1e6','#ffd27a']});sparkBurst(x,y,24,c,3.6);flash(x,y,50,c);b.remove()});
   BL.appendChild(b);
 }
 
@@ -526,11 +560,11 @@ addEventListener('pointerdown',e=>{if(e.target.closest('button,input,label,.ball
 
 /* ---------- start ---------- */
 let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{resize();buildLights()},150)});
-resize();buildLights();bump();
+resize();buildLights();
+body.dataset.s='intro';body.classList.add('off');step2('按下開始','music',start);
 requestAnimationFrame(frame);
 for(let i=0;i<6;i++)spawnBalloon(true);
 setInterval(()=>spawnBalloon(false),2600);
-setTimeout(()=>rain(140),500);
 }
 </script>
 </body>
