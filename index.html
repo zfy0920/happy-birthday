@@ -123,6 +123,9 @@ body[data-s=wish] #cake,body[data-s=gift] #giftWrap{cursor:pointer}
 #giftWrap.hl #gift{animation:hop 1.1s ease-in-out infinite}
 @keyframes hop{50%{transform:translateY(-10px) rotate(-3deg)}}
 .letter .l{opacity:0;margin:10px 0 0;animation:lineIn .9s ease forwards;animation-delay:var(--d)}
+.bar{height:6px;max-width:260px;margin:18px auto 4px;border-radius:9px;background:#ffffff22;overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,var(--gold),var(--pink));animation:fill linear forwards}
+@keyframes fill{to{width:100%}}
 @keyframes lineIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 .letter .sign{font-weight:900;font-size:24px;color:var(--pink)}
 @media(max-width:520px){.b{flex:1 1 100%}.card{padding:18px}}
@@ -474,15 +477,26 @@ function finale(){
   bulbs.forEach(b=>b.classList.remove('hit'));
   card.querySelectorAll('.tk').forEach(e=>{e.classList.remove('now');e.classList.add('done')});
   for(let k=0;k<5;k++)setTimeout(()=>rocket(W*(.12+.19*k),R(H*.1,H*.3),k===2?'heart':null),k*170);
-  setTimeout(()=>{rain(200);show(`<p class="big">${esc(NAME)}，生日快樂！</p><p>歌唱完了，接下來，該許願了。</p>`);step2('去許願','candle',wishScreen)},1600);
+  setTimeout(()=>{rain(200);show(`<p class="big">${esc(NAME)}，生日快樂！</p><p>歌唱完了，接下來，親手把蠟燭點起來吧。</p>`);step2('點蠟燭','candle',lightUp)},1600);
 }
 
 /* screen 2: wish + blow candles */
 const scene=$('scene'),flames=[...document.querySelectorAll('.flame')],glows=[...document.querySelectorAll('.fglow')],smokes=[...document.querySelectorAll('.smoke')];
-function wishScreen(){
-  body.dataset.s='wish';
-  show('<p class="big">許個願吧</p><p>閉上眼睛，在心裡許一個願望。<br>準備好了，就把蠟燭吹熄。</p>');
-  step2('吹熄蠟燭','candle',blow);
+const WISH_SEC=15;
+function lightUp(){
+  body.dataset.s='lighting';scene.classList.remove('out');
+  show('<p class="big">點蠟燭</p><p>一根、兩根、三根……</p>');
+  flames.forEach((f,i)=>setTimeout(()=>{f.classList.remove('out');glows[i].classList.remove('out');const[x,y]=center(glows[i]);sparkBurst(x,y,26,['#ffd27a','#fff1b8'],2.8);flash(x,y,40,'#ffd27a');tick(880+i*120)},300+i*450));
+  setTimeout(wishTime,300+flames.length*450+700);
+}
+function wishTime(){
+  body.dataset.s='wishing';
+  show(`<p class="big">許個願吧</p><p>閉上眼睛，在心裡許一個願望。<br>慢慢來，不用急。</p><div class="bar"><i style="animation-duration:${WISH_SEC}s"></i></div>`);
+  setTimeout(()=>{
+    body.dataset.s='wish';
+    show('<p class="big">許好了嗎？</p><p>那就一口氣，把蠟燭全部吹熄吧！</p>');
+    step2('吹熄蠟燭','candle',blow);
+  },WISH_SEC*1000);
 }
 function blow(){
   wait();body.dataset.s='blowing';sWhoosh();
@@ -528,8 +542,6 @@ gw.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefa
 const LETTER=['謝謝你一直都在。認識你，真的是我很幸運的事。','新的一歲，願你每天都有好心情、好天氣、好運氣。','願你想做的事都順利，想見的人都見得到。','不管幾歲，都要記得：你值得所有美好的事。'];
 function ending(){
   body.dataset.s='end';next.hidden=true;
-  scene.classList.remove('out');
-  flames.forEach((f,i)=>setTimeout(()=>{f.classList.remove('out');glows[i].classList.remove('out');const[x,y]=center(glows[i]);sparkBurst(x,y,22,['#ffd27a','#fff1b8'],2.6);tick(880+i*120)},i*200));
   const n=LETTER.length;
   show(`<div class="letter"><p class="big">給 ${esc(NAME)}</p>${LETTER.map((t,i)=>`<p class="l" style="--d:${(.6+i*1.4).toFixed(1)}s">${t}</p>`).join('')}<p class="l sign" style="--d:${(.6+n*1.4+.4).toFixed(1)}s">生日快樂！</p></div>`);
   setTimeout(()=>{for(let k=0;k<5;k++)setTimeout(()=>rocket(W*(.12+.19*k),R(H*.1,H*.3),k===2?'heart':null),k*170);rain(220)},(.6+n*1.4+.4)*1000);
@@ -561,7 +573,7 @@ addEventListener('pointerdown',e=>{if(e.target.closest('button,input,label,.ball
 /* ---------- start ---------- */
 let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{resize();buildLights()},150)});
 resize();buildLights();
-body.dataset.s='intro';body.classList.add('off');step2('按下開始','music',start);
+body.dataset.s='intro';body.classList.add('off');scene.classList.add('out');flames.forEach(f=>f.classList.add('out'));glows.forEach(g=>g.classList.add('out'));step2('按下開始','music',start);
 requestAnimationFrame(frame);
 for(let i=0;i<6;i++)spawnBalloon(true);
 setInterval(()=>spawnBalloon(false),2600);
