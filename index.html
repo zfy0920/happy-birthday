@@ -51,7 +51,7 @@ h1{margin:4px 0 0;line-height:1.05;font-weight:900}
 @keyframes shine{from{background-position:100% 0}to{background-position:-160% 0}}
 .sub{display:block;font-size:clamp(28px,5.4vw,44px);margin-top:8px;letter-spacing:.1em;text-shadow:0 3px 0 #5a1530,0 0 24px #ff7aa266}
 .lead{margin:8px 0 0;color:var(--soft);font-size:16px}
-.stage{position:relative;margin:4px auto 0;max-width:min(580px,68vh)}
+.stage{position:relative;margin:4px auto 0;max-width:min(500px,60vh)}
 .stage svg{display:block;width:100%;height:auto;overflow:visible}
 #cake,#giftWrap{cursor:pointer;outline:none}
 #scene .lightdep{transition:opacity .8s}
@@ -108,6 +108,14 @@ footer input:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .snd{position:fixed;top:12px;right:12px;z-index:8;width:46px;height:46px;border-radius:50%;border:1px solid #ffffff38;background:#0005;color:var(--cream);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:grid;place-items:center;cursor:pointer}
 .snd svg{width:22px;height:22px}
 .snd:focus-visible{outline:2px solid var(--gold)}
+.lock{display:none;min-height:66vh;place-content:center;justify-items:center;padding-top:4vh}
+body[data-s=lock] .lock{display:grid;animation:up 1s ease both}
+body[data-s=lock] .head,body[data-s=lock] .stage,body[data-s=lock] .card,body[data-s=lock] .btns,body[data-s=lock] .intro{display:none}
+#pw{margin-top:26px;width:7.5em;font:900 34px/1 var(--cn);letter-spacing:.45em;text-indent:.45em;text-align:center;color:var(--cream);background:#ffffff14;border:2px solid #ffffff40;border-radius:20px;padding:16px 10px}
+#pw:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 4px #ffd27a33,0 0 30px #ffd27a44}
+.lock.err #pw{animation:shake2 .45s;border-color:var(--pink)}
+@keyframes shake2{20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}
+#pwMsg{min-height:1.6em}
 .intro{display:none;min-height:58vh;place-content:center;padding-top:6vh}
 .introT{font-weight:900;font-size:clamp(36px,8vw,60px);line-height:1.15;margin:14px 0 0;text-wrap:balance;text-shadow:0 4px 0 #5a1530,0 0 30px #ff7aa255}
 body[data-s=intro] .intro{display:grid;animation:up 1.2s ease both}
@@ -146,19 +154,25 @@ body[data-s=wish] #cake,body[data-s=gift] #giftWrap{cursor:pointer}
 <button class="snd live" id="snd" aria-label="音效開關"></button>
 
 <main>
+  <section class="lock live" id="lock">
+    <p class="script">Shh...</p>
+    <p class="introT">先輸入密碼<br>才能進來喔</p>
+    <input id="pw" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" aria-label="密碼">
+    <p class="lead" id="pwMsg">提示：今天是幾月幾號？</p>
+  </section>
   <section class="intro" id="intro">
     <p class="script">For you</p>
-    <p class="introT">今天是一個<br>特別的日子</p>
-    <p class="lead">有一份驚喜，只準備給你一個人</p>
+    <p class="introT">今天是<br>你的大日子欸！</p>
+    <p class="lead">我偷偷準備了一個小驚喜給你</p>
   </section>
   <header class="head">
     <p class="script">Happy Birthday</p>
     <h1><span class="nm" id="nm"></span><span class="sub">生日快樂！</span></h1>
-    <p class="lead">今晚所有的燈，都只為你一個人亮</p>
+    <p class="lead">今天你最大，什麼都你說了算！</p>
   </header>
 
   <div class="stage live">
-  <svg id="scene" viewBox="0 0 620 440" role="img" aria-label="點著蠟燭的雙層草莓蛋糕，旁邊有兩個禮物">
+  <svg id="scene" viewBox="0 0 520 440" role="img" aria-label="雙層草莓生日蛋糕">
     <defs>
       <radialGradient id="warm"><stop offset="0" stop-color="#ffcf7a" stop-opacity=".55"/><stop offset=".45" stop-color="#ff8a5a" stop-opacity=".16"/><stop offset="1" stop-color="#ff8a5a" stop-opacity="0"/></radialGradient>
       <radialGradient id="warm2"><stop offset="0" stop-color="#fff2c0" stop-opacity=".65"/><stop offset="1" stop-color="#fff2c0" stop-opacity="0"/></radialGradient>
@@ -179,7 +193,7 @@ body[data-s=wish] #cake,body[data-s=gift] #giftWrap{cursor:pointer}
       <pattern id="st2" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="10" height="10" fill="#fff"/><rect width="10" height="4" fill="#ffbf3d"/></pattern>
     </defs>
     <circle class="lightdep" cx="260" cy="110" r="260" fill="url(#warm)"/>
-    <ellipse cx="300" cy="416" rx="290" ry="18" fill="url(#shadowG)"/>
+    <ellipse cx="260" cy="416" rx="250" ry="18" fill="url(#shadowG)"/>
     <g id="floor"></g>
     <!-- stand -->
     <path d="M244 386Q252 397 234 410H286Q268 397 276 386Z" fill="url(#standG)"/>
@@ -209,44 +223,6 @@ body[data-s=wish] #cake,body[data-s=gift] #giftWrap{cursor:pointer}
       <g id="berries"></g>
     </g>
     <g id="spks"></g>
-    <!-- small gift -->
-    <g transform="translate(18 352) rotate(-5 30 60)">
-      <ellipse cx="34" cy="62" rx="46" ry="7" fill="url(#shadowG)"/>
-      <rect x="0" y="16" width="62" height="46" rx="3" fill="url(#tealG)"/>
-      <path d="M62 16L72 10V56L62 62Z" fill="#23897a"/>
-      <circle cx="12" cy="30" r="3.5" fill="#fff" opacity=".35"/><circle cx="48" cy="48" r="3.5" fill="#fff" opacity=".35"/><circle cx="14" cy="52" r="3.5" fill="#fff" opacity=".35"/><circle cx="50" cy="26" r="3.5" fill="#fff" opacity=".35"/>
-      <rect x="26" y="16" width="10" height="46" fill="url(#goldG)"/>
-      <path d="M-3 8L7 2H75L65 8Z" fill="#b3f7ea"/>
-      <rect x="-3" y="8" width="68" height="11" rx="2" fill="#8ff0de"/>
-      <path d="M65 8L75 2V13L65 19Z" fill="#33bfa8"/>
-      <rect x="26" y="8" width="10" height="11" fill="url(#goldG)"/>
-      <path d="M33 3C18-16 6-2 33 3ZM33 3C48-16 62-2 33 3Z" fill="url(#goldG)" stroke="#b07a18" stroke-width="1.2"/>
-      <circle cx="33" cy="3" r="4" fill="url(#goldG)"/>
-    </g>
-    <!-- big gift -->
-    <g id="giftWrap" transform="translate(448 314)" role="button" tabindex="0" aria-label="打開禮物">
-      <g transform="translate(58 18)"><g class="rays" id="rays" fill="url(#rayG)"></g></g>
-      <ellipse cx="64" cy="100" rx="76" ry="10" fill="url(#shadowG)"/>
-      <g id="gift" class="gift">
-        <path d="M112 20L130 9V87L112 98Z" fill="#a8284f"/>
-        <path d="M112 52L130 41V51L112 62Z" fill="#c98d1f"/>
-        <rect x="0" y="20" width="112" height="78" rx="3" fill="url(#giftG)"/>
-        <g fill="#fff" opacity=".35"><circle cx="16" cy="36" r="4"/><circle cx="32" cy="80" r="4"/><circle cx="14" cy="78" r="4"/><circle cx="86" cy="34" r="4"/><circle cx="96" cy="80" r="4"/><circle cx="80" cy="88" r="3"/><circle cx="34" cy="38" r="3"/></g>
-        <rect x="48" y="20" width="16" height="78" fill="url(#goldG)"/>
-        <rect x="0" y="52" width="112" height="10" fill="url(#goldG)"/>
-        <ellipse class="inglow" cx="58" cy="21" rx="56" ry="8" fill="#fff6cc"/>
-        <g class="lid">
-          <path d="M-6 6L12-5H138L120 6Z" fill="#ffa3bf"/>
-          <rect x="-6" y="6" width="126" height="18" rx="3" fill="#ff7aa2"/>
-          <path d="M120 6L138-5V13L120 24Z" fill="#c93a66"/>
-          <rect x="48" y="6" width="16" height="18" fill="url(#goldG)"/>
-          <path d="M48 6L66-5H82L64 6Z" fill="#ffd977"/>
-          <path d="M63-4L50 20L56 18L60 23ZM67-4L80 20L74 18L70 23Z" fill="url(#goldG)"/>
-          <path d="M65-5C38-38 14-8 65-5ZM65-5C92-38 116-8 65-5Z" fill="url(#goldG)" stroke="#b07a18" stroke-width="1.5"/>
-          <ellipse cx="65" cy="-6" rx="7" ry="5.5" fill="url(#goldG)" stroke="#b07a18" stroke-width="1"/>
-        </g>
-      </g>
-    </g>
   </svg>
   </div>
 
@@ -314,9 +290,8 @@ $('candles').innerHTML=CAND.map(([x,y],i)=>`<g transform="translate(${x} ${y})">
     <ellipse cy="-1" rx="2.5" ry="3" fill="#6aa9ff" opacity=".55"/>
   </g></g><path class="smoke" d="M0 0c-5-8 5-14 0-22s5-14 0-22s-5-12 0-18"/></g></g>`).join('');
 $('berries').innerHTML=[[198,157],[322,157],[260,163]].map(([x,y])=>`<g transform="translate(${x} ${y}) scale(1.25)"><path d="M0 9C-6 9-10 2-9-3C-8-8-4-9 0-8C4-9 8-8 9-3C10 2 6 9 0 9Z" fill="url(#berry)"/><g fill="#ffe27a"><circle cx="-4" cy="-1" r=".8"/><circle cy="2" r=".8"/><circle cx="4" cy="-1" r=".8"/><circle cx="-2" cy="5" r=".8"/><circle cx="2" cy="5" r=".8"/><circle cy="-4" r=".8"/></g><path d="M-6-8L-2-9L0-13L2-9L6-8L2-6L0-7L-2-6Z" fill="#3fb36b"/><ellipse cx="-3.5" cy="-2" rx="1.8" ry="3" fill="#fff" opacity=".35"/></g>`).join('');
-$('spks').innerHTML=[[92,170,1],[436,150,.8],[140,96,.7],[392,86,1],[60,268,.6],[470,250,.7],[330,48,.6],[190,52,.8],[565,210,.6],[30,180,.7]].map(([x,y,s],i)=>`<g transform="translate(${x} ${y}) scale(${s})"><path class="spk" style="--d:${(i*.37).toFixed(2)}s" d="M0-10L2.5-2.5L10 0L2.5 2.5L0 10L-2.5 2.5L-10 0L-2.5-2.5Z" fill="#fff6d0"/></g>`).join('');
-{let f='';for(let i=0;i<22;i++){const x=rnd()*620,y=404+rnd()*28;if(x>180&&x<340)continue;f+=`<rect x="${f1(x)}" y="${f1(y)}" width="6" height="3.4" rx="1" fill="${COLS[i%6]}" opacity=".85" transform="rotate(${Math.round(rnd()*180)} ${f1(x)} ${f1(y)})"/>`}$('floor').innerHTML=f}
-{let r='';for(let k=0;k<12;k++){const a=k*Math.PI/6,b=.09;r+=`<path d="M0 0L${f1(Math.cos(a-b)*180)} ${f1(Math.sin(a-b)*180)}L${f1(Math.cos(a+b)*180)} ${f1(Math.sin(a+b)*180)}Z"/>`}$('rays').innerHTML=r}
+$('spks').innerHTML=[[92,170,1],[436,150,.8],[140,96,.7],[392,86,1],[60,268,.6],[462,250,.7],[330,48,.6],[190,52,.8],[495,190,.6],[30,180,.7]].map(([x,y,s],i)=>`<g transform="translate(${x} ${y}) scale(${s})"><path class="spk" style="--d:${(i*.37).toFixed(2)}s" d="M0-10L2.5-2.5L10 0L2.5 2.5L0 10L-2.5 2.5L-10 0L-2.5-2.5Z" fill="#fff6d0"/></g>`).join('');
+{let f='';for(let i=0;i<22;i++){const x=20+rnd()*480,y=404+rnd()*28;if(x>180&&x<340)continue;f+=`<rect x="${f1(x)}" y="${f1(y)}" width="6" height="3.4" rx="1" fill="${COLS[i%6]}" opacity=".85" transform="rotate(${Math.round(rnd()*180)} ${f1(x)} ${f1(y)})"/>`}$('floor').innerHTML=f}
 
 /* ---------- string lights & bunting ---------- */
 let bulbs=[];
@@ -392,17 +367,29 @@ function sparkBurst(x,y,n,col,sp){for(let i=0;i<k3(n);i++){const a=R(0,6.3),s=R(
 function hearts(x,y,n){for(let i=0;i<k3(n);i++){const l=R(90,150);add({k:'h',x:x+R(-30,30),y:y+R(-10,10),vx:R(-2.2,2.2),vy:R(-5,-1.5),sz:R(.9,1.9),col:pick(['#ff7aa2','#ff4f7e','#ffb3c9','#ffd27a']),ph:R(0,6),life:l,max:l})}}
 function flash(x,y,r,col){add({k:'f',x,y,r,col,life:12,max:12})}
 function explode(x,y,col,type){
+  if(type==='heart')return heartBurst(x,y);
+  if(type==='star')return shapeBurst(x,y,starPts(),['#ffd27a','#fff1b8','#ffe08a'],5.6);
+  if(type==='smile')return shapeBurst(x,y,smilePts(),['#ffd27a','#ffe08a'],5);
   const n=k3(type==='ring'?70:120),col2=pick(FW),wil=type==='willow';
   for(let i=0;i<n;i++){const a=i/n*Math.PI*2+R(-.05,.05),s=type==='ring'?4.4:R(1,5.8),l=wil?R(110,160):R(55,95);
     add({k:'s',x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,g:wil?.035:.05,drag:wil?.975:.963,life:l,max:l,r:wil?1.6:2.1,col:wil?'#ffcf6a':(i%4===0?col2:col),tw:type==='crackle'})}
   flash(x,y,90,col);sBoom();
 }
+function shapeBurst(x,y,pts,cols,sp){
+  for(const[px,py]of pts){const l=R(95,125);add({k:'s',x,y,vx:px*sp,vy:py*sp,g:.012,drag:.955,life:l,max:l,r:2.3,col:pick(cols)})}
+  sparkBurst(x,y,30,'#fff1e6',2.2);flash(x,y,120,cols[0]);sBoom(.28);
+}
+function starPts(){const v=[];for(let k=0;k<10;k++){const a=-Math.PI/2+k*Math.PI/5,r=k%2?.42:1;v.push([Math.cos(a)*r,Math.sin(a)*r])}
+  const o=[];for(let k=0;k<10;k++){const[a,b]=v[k],[c,d]=v[(k+1)%10];for(let j=0;j<k3(9);j++){const t=j/k3(9);o.push([a+(c-a)*t,b+(d-b)*t])}}return o}
+function smilePts(){const o=[],n=k3(44);for(let i=0;i<n;i++){const a=i/n*Math.PI*2;o.push([Math.cos(a),Math.sin(a)])}
+  for(const ex of[-.36,.36])for(let i=0;i<k3(7);i++){const a=i/7*Math.PI*2;o.push([ex+Math.cos(a)*.09,-.3+Math.sin(a)*.09])}
+  for(let i=0;i<k3(16);i++){const a=Math.PI*(.15+.7*i/15);o.push([Math.cos(a)*.56,.05+Math.sin(a)*.5])}return o}
 function heartBurst(x,y){
   const n=k3(110);for(let i=0;i<n;i++){const t=i/n*Math.PI*2,hx=16*Math.sin(t)**3,hy=-(13*Math.cos(t)-5*Math.cos(2*t)-2*Math.cos(3*t)-Math.cos(4*t)),l=R(95,120);
     add({k:'s',x,y,vx:hx*.3,vy:hy*.3,g:.015,drag:.955,life:l,max:l,r:2.3,col:i%3?'#ff6f9a':'#ffd27a'})}
   sparkBurst(x,y,40,'#fff1e6',2.5);flash(x,y,130,'#ff7aa2');sBoom(.3);
 }
-function rocket(x,ty,type){const g=.15,vy=-Math.sqrt(2*g*Math.max(60,H+10-ty));add({k:'r',x,y:H+10,vx:R(-.3,.3),vy,g,col:pick(FW),type:type||pick(['peony','ring','willow','crackle','peony']),life:999});noiseHit('highpass',3000,.5,.05,.5)}
+function rocket(x,ty,type){const g=.15,vy=-Math.sqrt(2*g*Math.max(60,H+10-ty));add({k:'r',x,y:H+10,vx:R(-.3,.3),vy,g,col:pick(FW),type:type||pick(['peony','ring','willow','crackle','peony','star','smile','heart']),life:999});noiseHit('highpass',3000,.5,.05,.5)}
 function shootingStar(){add({k:'sh',x:W+60,y:R(H*.06,H*.22),vx:-R(15,19),vy:R(4,6),life:110,max:110});tick(1760)}
 function upd(p){switch(p.k){
   case'c':p.vx*=.985;p.vy=Math.min(p.vy*.985+.18,3.2);p.x+=p.vx+Math.sin(p.ph)*.7;p.y+=p.vy;p.rot+=p.vr;p.ph+=p.vp;break;
@@ -410,7 +397,7 @@ function upd(p){switch(p.k){
   case'st':p.vy+=p.g;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;break;
   case'h':p.vy=p.vy*.985-.03;p.ph+=.08;p.vx*=.97;p.x+=p.vx+Math.sin(p.ph)*.8;p.y+=p.vy;break;
   case'r':p.x+=p.vx;p.y+=p.vy;p.vy+=p.g;add({k:'s',x:p.x+R(-1,1),y:p.y,vx:R(-.3,.3),vy:R(.4,1.4),g:.02,drag:.94,life:24,max:28,r:1.5,col:'#ffcf8a'});
-    if(p.vy>-.6){p.life=0;p.type==='heart'?heartBurst(p.x,p.y):explode(p.x,p.y,p.col,p.type)}return;
+    if(p.vy>-.6){p.life=0;explode(p.x,p.y,p.col,p.type)}return;
   case'sh':p.x+=p.vx;p.y+=p.vy;add({k:'st',x:p.x,y:p.y,vx:R(-.5,.5),vy:R(-.2,.8),g:.02,rot:R(0,6),vr:R(-.1,.1),sz:R(2,4.5),col:pick(['#fff','#fff1b8','#ffd27a']),life:34,max:34});break;
 }p.life--}
 function draw(p){const a=Math.min(1,p.life/p.max*1.4);switch(p.k){
@@ -461,7 +448,7 @@ const SONG=[['G4',.75],['G4',.25],['A4',1],['G4',1],['C5',1],['B4',2],['G4',.75]
   ['G4',.75],['G4',.25],['G5',1],['E5',1],['C5',1],['B4',1],['A4',2],['F5',.75],['F5',.25],['E5',1],['C5',1],['D5',1],['C5',3]];
 const BEAT=.42;
 function start(){
-  body.dataset.s='party';body.classList.remove('off');renderName();sChime();show('<p class="big">準備好了嗎？</p><p>音樂要開始囉，記得把聲音打開</p>');
+  body.dataset.s='party';body.classList.remove('off');renderName();sChime();show('<p class="big">先把聲音打開喔！</p><p>音樂要來囉～</p>');
   setTimeout(()=>{rain(160);song()},1400);
 }
 function song(){
@@ -484,7 +471,7 @@ function finale(){
   bulbs.forEach(b=>b.classList.remove('hit'));
   card.querySelectorAll('.tk').forEach(e=>{e.classList.remove('now');e.classList.add('done')});
   for(let k=0;k<5;k++)setTimeout(()=>rocket(W*(.12+.19*k),R(H*.1,H*.3),k===2?'heart':null),k*170);
-  setTimeout(()=>{rain(200);show(`<p class="big">${esc(NAME)}，生日快樂！</p><p>歌唱完了，接下來，親手把蠟燭點起來吧。</p>`);step2('點蠟燭','candle',lightUp)},1600);
+  setTimeout(()=>{rain(200);show(`<p class="big">${esc(NAME)}，生日快樂！</p><p>歌唱完了～換你把蠟燭點起來！</p>`);step2('點蠟燭','candle',lightUp)},1600);
 }
 
 /* screen 2: wish + blow candles */
@@ -492,16 +479,16 @@ const scene=$('scene'),flames=[...document.querySelectorAll('.flame')],glows=[..
 const WISH_SEC=15;
 function lightUp(){
   body.dataset.s='lighting';scene.classList.remove('out');
-  show('<p class="big">點蠟燭</p><p>一根、兩根、三根……</p>');
+  show('<p class="big">點蠟燭囉</p><p>一根、兩根、三根……</p>');
   flames.forEach((f,i)=>setTimeout(()=>{f.classList.remove('out');glows[i].classList.remove('out');const[x,y]=center(glows[i]);sparkBurst(x,y,26,['#ffd27a','#fff1b8'],2.8);flash(x,y,40,'#ffd27a');tick(880+i*120)},300+i*450));
   setTimeout(wishTime,300+flames.length*450+700);
 }
 function wishTime(){
   body.dataset.s='wishing';
-  show(`<p class="big">許個願吧</p><p>閉上眼睛，在心裡許一個願望。<br>慢慢來，不用急。</p><div class="bar"><i style="animation-duration:${WISH_SEC}s"></i></div>`);
+  show(`<p class="big">來許願吧！</p><p>眼睛閉起來，偷偷在心裡許，<br>慢慢想沒關係～</p><div class="bar"><i style="animation-duration:${WISH_SEC}s"></i></div>`);
   setTimeout(()=>{
     body.dataset.s='wish';
-    show('<p class="big">許好了嗎？</p><p>那就一口氣，把蠟燭全部吹熄吧！</p>');
+    show('<p class="big">許好了嗎？</p><p>好，一口氣把它吹熄！</p>');
     step2('吹熄蠟燭','candle',blow);
   },WISH_SEC*1000);
 }
@@ -510,29 +497,28 @@ function blow(){
   flames.forEach((f,i)=>setTimeout(()=>{f.classList.add('out');glows[i].classList.add('out');smokes[i].classList.remove('on');smokes[i].getBoundingClientRect();smokes[i].classList.add('on')},i*80));
   scene.classList.add('out');
   setTimeout(()=>{dark=true;body.classList.add('dark')},350);
-  show('<p class="big">噓……燈關了</p><p>願望正在送出去</p>');
+  show('<p class="big">噓……關燈了</p><p>你的願望正在飛上天</p>');
   setTimeout(shootingStar,1300);
   setTimeout(()=>{
     dark=false;body.classList.remove('dark');
     confetti(0,H,170,{angle:-Math.PI/3,spread:.7,speed:R(17,21)});confetti(W,H,170,{angle:-2*Math.PI/3,spread:.7,speed:R(17,21)});
     sPop();setTimeout(sPop,60);sChime();
-    show(`<p class="big">願望已經送上天了！</p><p>剛剛那顆流星帶走了你的願望，它一定會實現的。</p>`);
+    show(`<p class="big">願望送出去啦！</p><p>有看到剛剛那顆流星嗎？<br>它幫你把願望帶走了，一定會成真的啦！</p>`);
     step2('下一步','arrow',giftScreen);
   },3100);
 }
 $('cake').addEventListener('click',()=>{if(body.dataset.s==='wish'&&onNext)next.click()});
 
 /* screen 3: gift */
-const gw=$('giftWrap'),gift=$('gift');
 /* 獎品清單：改這裡 */
 const PRIZES=['一頓大餐（我請客）','一杯手搖飲，甜度冰塊隨你','一場電影，爆米花我買','一整天，都聽你的','一個超級大擁抱','下次出去玩，我當司機','許一個願望，我幫你實現','一張「不生氣卡」，限用一次'];
 function giftScreen(){
-  body.dataset.s='gift';gw.classList.add('hl');
-  show('<p class="big">生日抽獎時間！</p><p>禮物盒裡藏著好幾份獎品，<br>但只能抽一份，看看你的手氣吧！</p>');
+  body.dataset.s='gift';
+  show('<p class="big">接下來是抽獎時間！</p><p>我準備了好幾個獎品，但只能抽一個喔，<br>就看你手氣啦～</p>');
   step2('抽獎！','gift',openGift);
 }
 function openGift(){
-  wait();body.dataset.s='opening';gw.classList.remove('hl');
+  wait();body.dataset.s='opening';
   show('<p class="big">抽獎中……</p><div class="slot"><span id="slotT"></span></div>');
   const el=$('slotT'),win=Math.floor(Math.random()*PRIZES.length);
   let idx=Math.floor(Math.random()*PRIZES.length),delay=55;
@@ -540,7 +526,6 @@ function openGift(){
   let n=0;
   const roll=()=>{
     el.textContent=PRIZES[idx];el.classList.remove('pop');el.getBoundingClientRect();el.classList.add('pop');tick(1100+(n%2)*220);
-    if(n%3===0){gift.classList.remove('shake');gift.getBoundingClientRect();gift.classList.add('shake')}
     if(n>=total){land();return}
     n++;idx=(idx+1)%PRIZES.length;
     if(n>total-10)delay*=1.28;
@@ -549,27 +534,24 @@ function openGift(){
   const land=()=>{
     $('card').querySelector('.slot').classList.add('won');
     setTimeout(()=>{
-      gw.classList.add('open');sChime();sPop();setTimeout(sPop,90);
-      const r=gift.getBoundingClientRect(),x=r.left+r.width*.5,y=r.top+r.height*.3;
+      sChime();sPop();setTimeout(sPop,90);
+      const[x,y]=center($('card'));
       hearts(x,y,30);sparkBurst(x,y,80,['#ffd27a','#fff1e6','#ff9ab8'],6.5);flash(x,y,140,'#ffd27a');
       confetti(x,y,90,{angle:-Math.PI/2,spread:1.3,speed:13});
       confetti(0,H,120,{angle:-Math.PI/3,spread:.7,speed:R(17,21)});confetti(W,H,120,{angle:-2*Math.PI/3,spread:.7,speed:R(17,21)});
-      show(`<p class="big">恭喜抽中！</p><div class="slot won"><span>${esc(PRIZES[win])}</span></div><p class="note">截圖這個畫面，就可以找我兌換喔</p>`);
-      setTimeout(()=>step2('最後一頁','arrow',ending),1400);
+      show(`<p class="big">抽到了！恭喜恭喜～</p><div class="slot won"><span>${esc(PRIZES[win])}</span></div><p class="note">記得截圖，之後拿來找我兌換喔！</p>`);
+      setTimeout(()=>step2('還有一封信','arrow',ending),1400);
     },500);
   };
   roll();
 }
-const openG=()=>{if(body.dataset.s==='gift'&&onNext)next.click()};
-gw.addEventListener('click',openG);
-gw.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openG()}});
 
 /* screen 4: the letter, stays until they leave */
-const LETTER=['謝謝你一直都在。認識你，真的是我很幸運的事。','新的一歲，願你每天都有好心情、好天氣、好運氣。','願你想做的事都順利，想見的人都見得到。','不管幾歲，都要記得：你值得所有美好的事。'];
+const LETTER=['謝謝你一直都在，認識你真的是我賺到。','新的一歲，每天都要開開心心的喔！','想做的事都順順利利，想見的人都見得到。','不管幾歲，你都值得所有好東西，知道嗎？'];
 function ending(){
   body.dataset.s='end';next.hidden=true;
   const n=LETTER.length;
-  show(`<div class="letter"><p class="big">給 ${esc(NAME)}</p>${LETTER.map((t,i)=>`<p class="l" style="--d:${(.6+i*1.4).toFixed(1)}s">${t}</p>`).join('')}<p class="l sign" style="--d:${(.6+n*1.4+.4).toFixed(1)}s">生日快樂！</p></div>`);
+  show(`<div class="letter"><p class="big">給 ${esc(NAME)}</p>${LETTER.map((t,i)=>`<p class="l" style="--d:${(.6+i*1.4).toFixed(1)}s">${t}</p>`).join('')}<p class="l sign" style="--d:${(.6+n*1.4+.4).toFixed(1)}s">生日快樂啦！</p></div>`);
   setTimeout(()=>{for(let k=0;k<5;k++)setTimeout(()=>rocket(W*(.12+.19*k),R(H*.1,H*.3),k===2?'heart':null),k*170);rain(220)},(.6+n*1.4+.4)*1000);
   setTimeout(function loop(){if(!document.hidden)rocket(R(W*.1,W*.9),R(H*.08,H*.35));setTimeout(loop,R(1800,3200))},(.6+n*1.4+3)*1000);
 }
@@ -599,7 +581,16 @@ addEventListener('pointerdown',e=>{if(e.target.closest('button,input,label,.ball
 /* ---------- start ---------- */
 let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>{resize();buildLights()},150)});
 resize();buildLights();
-body.dataset.s='intro';body.classList.add('off');scene.classList.add('out');flames.forEach(f=>f.classList.add('out'));glows.forEach(g=>g.classList.add('out'));step2('按下開始','music',start);
+body.dataset.s='lock';body.classList.add('off');
+const PASSWORD='1127',pw=$('pw'),lock=$('lock');
+function tryPw(){
+  if(pw.value.length<4)return;
+  if(pw.value===PASSWORD){pw.blur();sChime();confetti(W/2,H*.45,90,{speed:10});sparkBurst(W/2,H*.45,50,['#ffd27a','#fff1e6'],5);body.dataset.s='intro'}
+  else{$('pwMsg').textContent='密碼不對喔，再想想～';lock.classList.remove('err');lock.getBoundingClientRect();lock.classList.add('err');tick(330);setTimeout(()=>{pw.value=''},350)}
+}
+pw.addEventListener('input',()=>{pw.value=pw.value.replace(/\D/g,'');tryPw()});
+pw.addEventListener('keydown',e=>{if(e.key==='Enter')tryPw()});
+setTimeout(()=>{try{pw.focus({preventScroll:true})}catch(e){}},600);scene.classList.add('out');flames.forEach(f=>f.classList.add('out'));glows.forEach(g=>g.classList.add('out'));step2('打開驚喜','music',start);
 requestAnimationFrame(frame);
 for(let i=0;i<6;i++)spawnBalloon(true);
 setInterval(()=>spawnBalloon(false),2600);
