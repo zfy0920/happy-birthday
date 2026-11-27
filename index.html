@@ -167,7 +167,7 @@ body[data-s=wish] #cake,body[data-s=gift] #giftWrap{cursor:pointer}
   </section>
   <header class="head">
     <p class="script">Happy Birthday</p>
-    <h1><span class="nm" id="nm"></span><span class="sub">生日快樂！</span></h1>
+    <h1><span class="nm" id="nm"></span></h1>
     <p class="lead">今天你最大，什麼都你說了算！</p>
   </header>
 
@@ -250,7 +250,7 @@ const f1=n=>n.toFixed(1);
 
 /* ---------- 壽星名字：改這裡 ---------- */
 const NAME='施盈萱';
-const renderName=()=>{$('nm').innerHTML=[...NAME].map((c,i)=>`<span class="ch" style="--i:${i}">${esc(c)}</span>`).join('')};
+const renderName=()=>{$('nm').innerHTML=[...'生日快樂！'].map((c,i)=>`<span class="ch" style="--i:${i}">${esc(c)}</span>`).join('')};
 
 /* ---------- cake scene ---------- */
 function dripPath(cx,y,rx,ry,n,maxLen){
@@ -511,7 +511,7 @@ $('cake').addEventListener('click',()=>{if(body.dataset.s==='wish'&&onNext)next.
 
 /* screen 3: gift */
 /* 獎品清單：改這裡 */
-const PRIZES=['一頓大餐（我請客）','一杯手搖飲，甜度冰塊隨你','一場電影，爆米花我買','一整天，都聽你的','一個超級大擁抱','下次出去玩，我當司機','許一個願望，我幫你實現','一張「不生氣卡」，限用一次'];
+const PRIZES=['手搖飲 +1','去吃那個不好吃的冰（我請客）','巧克力','不能統一天下，那就統一布丁','幫你實現一個願望'];
 function giftScreen(){
   body.dataset.s='gift';
   show('<p class="big">接下來是抽獎時間！</p><p>我準備了好幾個獎品，但只能抽一個喔，<br>就看你手氣啦～</p>');
